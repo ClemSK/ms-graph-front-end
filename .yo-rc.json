@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "ms-graph-front-end",
+    "libraryId": "a0d92670-1699-4eba-899c-c6b4c300e534",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "ms-graph-front-end",
+    "solutionShortDescription": "ms-graph-front-end description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
