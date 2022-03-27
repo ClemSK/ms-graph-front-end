@@ -17,7 +17,8 @@
     "@microsoft/sp-webpart-base": "1.14.0",
     "office-ui-fabric-react": "7.174.1",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "sass": "^1.49.9"
   },
   "devDependencies": {
     "@types/react": "16.9.51",
