@@ -13,6 +13,7 @@ import OneDriveRecordings from './components/OneDriveRecordings';
 import { IOneDriveRecordingsProps } from './components/IOneDriveRecordingsProps';
 import { MSGraphClient } from '@microsoft/sp-http';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import OneDriveRecordingStyles from './OneDriveRecordings.module.scss';
 
 export interface IOneDriveRecordingsWebPartProps {
   description: string;
@@ -36,21 +37,16 @@ export default class OneDriveRecordingsWebPart extends BaseClientSideWebPart<IOn
         client
           .api('/communications/callRecords')
           .version('beta')
-          .top(5)
+          .top(10)
           .orderby('endDateTime desc')
           .get((error, callRecords: any, rawResponse?: any) => {
             this.domElement.innerHTML = `
-      <div">
-      <div">
-        <div">
-          <div">
-            <span">Below is the list of calls</span>
-            <p">Powered by Microsoft Graph in SharePoint Framework.</p>
-            <div id="spListContainer" />
-          </div>
-        </div>
-      </div>
-      </div>`;
+      <section class="${OneDriveRecordingStyles.section}">
+      <div>
+            <h1 class"${OneDriveRecordingStyles.welcome}">Recordings</h1>
+            <h3 class="${OneDriveRecordingStyles.welcome}">Below is the list of calls records.</h3>
+          </div>    
+      </section>`;
 
             // List the latest call records based on what we got from the Graph
             this._renderCallList(callRecords.value);
@@ -63,17 +59,16 @@ export default class OneDriveRecordingsWebPart extends BaseClientSideWebPart<IOn
   ): void {
     let html: string = '';
     for (let index = 0; index < calls.length; index++) {
-      html += `<p">Call Recording ${index + 1} - ${escape(
-        calls[index].endDateTime
-      )}</p>`;
+      html += `
+      <ul class="${OneDriveRecordingStyles.list}>
+      <li class="${OneDriveRecordingStyles.listItem}>Call Recording ${
+        index + 1
+      } - ${escape(calls[index].endDateTime)}</li>
+      </ul>`;
     }
-
-    // Add the calls to the placeholder
-    const listContainer: Element =
-      this.domElement.querySelector('#spListContainer');
-    listContainer.innerHTML = html;
   }
 
+  // Add the calls to the placeholder
   private _getEnvironmentMessage(): string {
     if (!!this.context.sdks.microsoftTeams) {
       // running in Teams
