@@ -12,12 +12,12 @@ If a user selects to record their meeting can be viewed in a folder called ‘Re
 
 ## Features
 
-[x] A user can access sharepoint
-[x] A user can see the list of the last 10 meeting recordings
-[x] The files are displayed in an easy-to-understand format
-[ ] Webhook to update the Recordings folder as meetings are recorded
-[ ] In the user's OneDrive is a special folder called 'Recordings' - more on this below
-[ ] If a user selects to record their meeting the mp4 file is stored in the user's OneDrive
+- [x] A user can access sharepoint
+- [x] A user can see the list of the last 10 meeting recordings
+- [x] The files are displayed in an easy-to-understand format
+- [ ] Webhook to update the Recordings folder as meetings are recorded
+- [ ] In the user's OneDrive is a special folder called 'Recordings' - more on this below
+- [ ] If a user selects to record their meeting the mp4 file is stored in the user's OneDrive
 
 ---
 
