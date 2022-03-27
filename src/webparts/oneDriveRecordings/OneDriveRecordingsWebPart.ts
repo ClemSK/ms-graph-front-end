@@ -3,7 +3,7 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
@@ -11,13 +11,14 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'OneDriveRecordingsWebPartStrings';
 import OneDriveRecordings from './components/OneDriveRecordings';
 import { IOneDriveRecordingsProps } from './components/IOneDriveRecordingsProps';
+import { MSGraphClient } from '@microsoft/sp-http';
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 export interface IOneDriveRecordingsWebPartProps {
   description: string;
 }
 
 export default class OneDriveRecordingsWebPart extends BaseClientSideWebPart<IOneDriveRecordingsWebPartProps> {
-
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
 
@@ -28,26 +29,62 @@ export default class OneDriveRecordingsWebPart extends BaseClientSideWebPart<IOn
   }
 
   public render(): void {
-    const element: React.ReactElement<IOneDriveRecordingsProps> = React.createElement(
-      OneDriveRecordings,
-      {
-        description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
-      }
-    );
+    this.context.msGraphClientFactory
+      .getClient()
+      .then((client: MSGraphClient): void => {
+        // get information about the current user from the Microsoft Graph
+        client
+          .api('/communications/callRecords')
+          .version('beta')
+          .top(5)
+          .orderby('endDateTime desc')
+          .get((error, callRecords: any, rawResponse?: any) => {
+            this.domElement.innerHTML = `
+      <div">
+      <div">
+        <div">
+          <div">
+            <span">Below is the list of calls</span>
+            <p">Powered by Microsoft Graph in SharePoint Framework.</p>
+            <div id="spListContainer" />
+          </div>
+        </div>
+      </div>
+      </div>`;
 
-    ReactDom.render(element, this.domElement);
+            // List the latest call records based on what we got from the Graph
+            this._renderCallList(callRecords.value);
+          });
+      });
+  }
+
+  private _renderCallList(
+    calls: MicrosoftGraph.CallRecords.CallRecord[]
+  ): void {
+    let html: string = '';
+    for (let index = 0; index < calls.length; index++) {
+      html += `<p">Call Recording ${index + 1} - ${escape(
+        calls[index].endDateTime
+      )}</p>`;
+    }
+
+    // Add the calls to the placeholder
+    const listContainer: Element =
+      this.domElement.querySelector('#spListContainer');
+    listContainer.innerHTML = html;
   }
 
   private _getEnvironmentMessage(): string {
-    if (!!this.context.sdks.microsoftTeams) { // running in Teams
-      return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
+    if (!!this.context.sdks.microsoftTeams) {
+      // running in Teams
+      return this.context.isServedFromLocalhost
+        ? strings.AppLocalEnvironmentTeams
+        : strings.AppTeamsTabEnvironment;
     }
 
-    return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment;
+    return this.context.isServedFromLocalhost
+      ? strings.AppLocalEnvironmentSharePoint
+      : strings.AppSharePointEnvironment;
   }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
@@ -56,13 +93,13 @@ export default class OneDriveRecordingsWebPart extends BaseClientSideWebPart<IOn
     }
 
     this._isDarkTheme = !!currentTheme.isInverted;
-    const {
-      semanticColors
-    } = currentTheme;
+    const { semanticColors } = currentTheme;
     this.domElement.style.setProperty('--bodyText', semanticColors.bodyText);
     this.domElement.style.setProperty('--link', semanticColors.link);
-    this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered);
-
+    this.domElement.style.setProperty(
+      '--linkHovered',
+      semanticColors.linkHovered
+    );
   }
 
   protected onDispose(): void {
@@ -78,20 +115,20 @@ export default class OneDriveRecordingsWebPart extends BaseClientSideWebPart<IOn
       pages: [
         {
           header: {
-            description: strings.PropertyPaneDescription
+            description: strings.PropertyPaneDescription,
           },
           groups: [
             {
               groupName: strings.BasicGroupName,
               groupFields: [
                 PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                })
-              ]
-            }
-          ]
-        }
-      ]
+                  label: strings.DescriptionFieldLabel,
+                }),
+              ],
+            },
+          ],
+        },
+      ],
     };
   }
 }

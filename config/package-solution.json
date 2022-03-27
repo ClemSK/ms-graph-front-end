@@ -14,6 +14,12 @@
       "termsOfUseUrl": "",
       "mpnId": "Undefined-1.14.0"
     },
+    "webApiPermissionRequests": [
+      {
+        "resource": "Microsoft Graph",
+        "scope": "CallRecords.Read.All"
+      }
+    ],
     "metadata": {
       "shortDescription": {
         "default": "ms-graph-front-end description"
