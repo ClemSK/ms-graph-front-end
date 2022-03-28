@@ -25,7 +25,13 @@ If a user selects to record their meeting can be viewed in a folder called ‘Re
 
 A web part which displays the last 10 meeting recordings, displaying the meetings by endDateTime in descending order.
 
-The [Special folder](https://docs.microsoft.com/en-us/graph/api/drive-get-specialfolder?view=graph-rest-1.0&tabs=http) takes the following aliases:
+The [Special folder](https://docs.microsoft.com/en-us/graph/api/drive-get-specialfolder?view=graph-rest-1.0&tabs=http) has this denomination because:
+
+> Special folders provide simple aliases to access well-known folders in OneDrive without the need to look up the folder by path (which would require localization), or reference the folder with an ID. If a special folder is renamed or moved to another location within the drive, this syntax will continue to find that folder. Special folders are automatically created the first time an application attempts to write to one, if it doesn't already exist. If a user deletes one, it is recreated when written to again.
+
+tldr: They are folders with specific aliases which are automatically written to and have more flexible localisation.
+
+Special folders take the following aliases:
 
 - Documents
 - Photos
@@ -35,11 +41,17 @@ The [Special folder](https://docs.microsoft.com/en-us/graph/api/drive-get-specia
 
 While the recordings might go in documents, I didn't find a way to rename the special folders to 'Recordings'.
 
-Therefore, implementing a webhook would be an alternative to have recording data and files present in teh 'Recordings' folder.
+To automatically add files to a conventional folder would require a webhook, setting up a subscription as an alternative to regularly send recording data and files the 'Recordings' folder.
 
-If I had more time, I would complete a webhook feature to create a subscription so the user's folder would get updated as they create new recordings.
+---
 
-Moreover, calling the callRecords.mediaStream endpoint could provide further information about the recording to the user, potentially providing the recording file or link to the stream.
+## If I had more time
+
+1. I would complete a webhook feature to create a subscription so the user's folder would get updated as they create new recordings.
+
+2. Pairing the callRecords with the 'callRecordingEventMessageDetail.callRecordingDisplayName' would provide the user with a descriptive title for the call record.
+
+3. Additionally, calling the callRecords.mediaStream endpoint could provide further information about the recording to the user, potentially supplying the recording file or link to the stream.
 
 ---
 
