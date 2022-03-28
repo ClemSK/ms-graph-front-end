@@ -6,7 +6,7 @@ This is a front-end consuming the Microsoft Graph API.
 
 The solution creates a web part which provides a user with an experience which displays the recordings information in an easy-to-understand format.
 
-If a user selects to record their meeting can be viewed in a folder called ‘Recordings’.
+If a user selects to record their meeting, it can be viewed in a folder called ‘Recordings’.
 
 ---
 
